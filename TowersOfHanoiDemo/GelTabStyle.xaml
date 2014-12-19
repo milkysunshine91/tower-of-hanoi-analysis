@@ -1,0 +1,95 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	>
+	<Color x:Key="TabItemGradStart" R="#AA" G="#AA" B="#BB"/>
+	<Color x:Key="TabItemGradEnd" R="#EE" G="#EE" B="#FF" A="#FF"/>
+	<Color x:Key="TabItemGradStartSel" R="250" G="230" B="200"/>    
+	<Color x:Key="TabItemGradEndSel" R="250" G="190" B="130" A="#FF"/>
+	<Color x:Key="TabItemGradStartDisabled" R="#AA" G="#AA" B="#AA"/>
+	<Color x:Key="TabItemGradEndDisabled" R="#FF" G="#FF" B="#FF" A="#FF"/>
+	<Color x:Key="TabItemGradStartHover" R="#FF" G="#FF" B="#66"/>
+	<Color x:Key="TabItemGradEndHover" R="#FF" G="#FF" B="#99" A="#FF"/>
+
+	<LinearGradientBrush x:Key="TabBackgroundBrush" StartPoint="0,0" EndPoint="0,1" >
+		<GradientStop Offset="0" Color="{StaticResource TabItemGradStart}"/>
+		<GradientStop Offset="1" Color="{StaticResource TabItemGradEnd}"/>
+	</LinearGradientBrush>
+    <LinearGradientBrush x:Key="TabBackgroundBrushSel" StartPoint="0,0" EndPoint="0,1" >
+		<GradientStop Offset="0" Color="{StaticResource TabItemGradStartSel}"/>
+        <GradientStop Offset="0.5" Color="#FFFFD99D"/>
+        <GradientStop Offset="1" Color="#FFFFE6CB"/>
+	</LinearGradientBrush>
+	<LinearGradientBrush x:Key="TabBackgroundBrushDisabled" StartPoint="0,0" EndPoint="0,1" >
+		<GradientStop Offset="0" Color="{StaticResource TabItemGradStartDisabled}"/>
+		<GradientStop Offset="1" Color="{StaticResource TabItemGradEndDisabled}"/>
+	</LinearGradientBrush>
+	<LinearGradientBrush x:Key="TabBackgroundBrushHover" StartPoint="0,0" EndPoint="0,1" >
+		<GradientStop Offset="0" Color="{StaticResource TabItemGradStartHover}"/>
+		<GradientStop Offset="1" Color="{StaticResource TabItemGradEndHover}"/>
+	</LinearGradientBrush>
+
+
+	<Style x:Key="GelTabItem" TargetType="{x:Type TabItem}">
+	  <Setter Property="BorderThickness" Value="1"/>
+	  <Setter Property="BorderBrush" Value="Gray"/>
+	  <Setter Property="Template">
+		<Setter.Value>
+		  <ControlTemplate TargetType="{x:Type TabItem}">
+			<Border>
+			  <Grid>
+				  <Border CornerRadius="5,5,0,0" Background="{TemplateBinding Background}" 
+					   BorderBrush="{TemplateBinding BorderBrush}" 
+					   BorderThickness="{TemplateBinding BorderThickness}" />
+							<Rectangle Name="TabItemBackground" RadiusX="5" 
+								 RadiusY="0" Fill="{StaticResource TabBackgroundBrush}">
+							</Rectangle>
+				  <Border BorderThickness="{TemplateBinding BorderThickness}" 
+						  Padding="{TemplateBinding Padding}">
+				  <ContentPresenter ContentSource="Header" 
+					 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+					 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+				</Border>
+			  </Grid>
+			</Border>
+			<ControlTemplate.Triggers>
+				 <Trigger Property="IsSelected" Value="True">
+					<Setter TargetName="TabItemBackground" Property="Fill" 
+							Value="{StaticResource TabBackgroundBrushSel}" />
+				</Trigger>
+				<Trigger Property="IsSelected" Value="False">
+					<Setter TargetName="TabItemBackground" Property="Fill" 
+							Value="{StaticResource TabBackgroundBrush}" />
+				</Trigger>
+				<Trigger Property="IsEnabled" Value="False">
+					<Setter TargetName="TabItemBackground" Property="Fill" 
+							Value="{StaticResource TabBackgroundBrushDisabled}" />
+				</Trigger>
+			</ControlTemplate.Triggers>
+			</ControlTemplate>
+		</Setter.Value>
+	  </Setter>
+	</Style>
+	<Style x:Key="GelTabControl" TargetType="{x:Type TabControl}">
+	  <Setter Property="Template">
+		<Setter.Value>
+		  <ControlTemplate TargetType="TabControl">
+			<Grid>
+			  <Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			  </Grid.RowDefinitions>
+			  <Border BorderBrush="Transparent" BorderThickness="0" Grid.Row="1" 
+					  CornerRadius="5,5,5,5" Background="Transparent" Padding="5,5,5,5" >
+				  <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5,5,5,5" 
+						  Background="{StaticResource TabBackgroundBrushSel}"  >
+					<ContentPresenter ContentSource="SelectedContent" />                
+				  </Border>
+			  </Border>
+			  <TabPanel Grid.Row="0" IsItemsHost="true"/>
+			</Grid>
+		  </ControlTemplate>
+		</Setter.Value>
+	  </Setter>
+	</Style>		
+</ResourceDictionary>

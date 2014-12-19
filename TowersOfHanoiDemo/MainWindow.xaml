@@ -1,0 +1,124 @@
+﻿<Window x:Class="TowersOfHanoiDemo.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d3="http://research.microsoft.com/DynamicDataDisplay/1.0"
+        xmlns:local="clr-namespace:TowersOfHanoiDemo"
+		Title="Towers of Hanoi Demonstration" Height="600" Width="800" Background="#FFB4DCF5" WindowStartupLocation="CenterScreen" MinWidth="800" MinHeight="600">
+    <Window.Resources>
+        <LinearGradientBrush EndPoint="1,0" x:Key="poleFill">
+            <GradientStop Color="Silver" Offset="0" />
+            <GradientStop Color="LightSlateGray" Offset="0.5" />
+            <GradientStop Color="SlateGray" Offset="1" />
+        </LinearGradientBrush>
+        <PathGeometry x:Key="animGeometry">
+            <PathFigure IsClosed="False" >
+                <PolyLineSegment Points="0,0 0,0 0,0" />
+            </PathFigure>
+        </PathGeometry>
+        <Storyboard x:Key="moveStoryboard" SpeedRatio="{Binding Speed}">
+            <DoubleAnimationUsingPath Duration="0:0:5"  
+					Storyboard.TargetProperty="(Canvas.Left)"
+					PathGeometry="{StaticResource animGeometry}" Source="X" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+            <DoubleAnimationUsingPath Duration="0:0:5" 
+					Storyboard.TargetProperty="(Canvas.Bottom)"
+					PathGeometry="{StaticResource animGeometry}" Source="Y" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+        </Storyboard>
+    </Window.Resources>
+    <Grid>
+		<TabControl Name="tabControl" Background="AliceBlue">
+            <TabItem Header="Algorithm Demo" Name="tabDemo" Style="{DynamicResource GelTabItem}">
+				<Grid>
+					<GroupBox Header="Options:" HorizontalAlignment="Stretch" Name="groupBoxDemoOptions" VerticalAlignment="Bottom" Height="54" Margin="6,0,6,6" BorderBrush="SteelBlue">
+                        <GroupBox.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFDDFFCB" Offset="1" />
+                                <GradientStop Color="#FFE7FFE5" Offset="0" />
+                                <GradientStop Color="#FF96E285" Offset="0.516" />
+                            </LinearGradientBrush>
+                        </GroupBox.Background>
+                        <Grid>
+							<TextBlock Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="textBlockDisks" Text="Disks:" VerticalAlignment="Top" />
+                            <TextBox Height="23" HorizontalAlignment="Left" Margin="42,3,0,0" Name="textBoxDisks" Width="30" VerticalAlignment="Top" Tag="disk" PreviewTextInput="textBoxesInput_PreviewTextInput" LostFocus="textBoxes_LostFocus" KeyDown="textBoxes_KeyDown" Text="{Binding Disks}" />
+							<TextBlock Height="23" HorizontalAlignment="Left" Margin="78,6,0,0" Name="textBlockPegs" Text="Pegs:" VerticalAlignment="Top" />
+                            <TextBox Height="23" HorizontalAlignment="Left" Margin="112,3,0,0" Name="textBoxPegs" VerticalAlignment="Top" Width="30" Tag="peg" PreviewTextInput="textBoxesInput_PreviewTextInput" LostFocus="textBoxes_LostFocus" KeyDown="textBoxes_KeyDown" Text="{Binding Pegs}" />
+                            <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="148,3,0,0" Name="buttonStartDemo" VerticalAlignment="Top" Width="50" IsDefault="True" Click="buttonStartDemo_Click" Command="{Binding SolveCommand}" />
+                            <Button Content="Pause" Height="23" HorizontalAlignment="Left" Margin="204,3,0,0" Name="buttonPauseResumeDemo" VerticalAlignment="Top" Width="50" Click="buttonPauseResumeDemo_Click" Command="{Binding PauseCommand}"/>
+                            <Button Content="Reset" Height="23" HorizontalAlignment="Left" Margin="260,3,0,0" Name="buttonStopDemo" VerticalAlignment="Top" Width="50" IsCancel="True" Click="buttonStopDemo_Click" Command="{Binding ResetCommand}"/>
+							<TextBlock Height="23" HorizontalAlignment="Left" Margin="501,6,0,0" Name="textBlockSlow" Text="Slow" VerticalAlignment="Top" />
+							<Slider Minimum="1" Maximum="100" Value="{Binding Speed}" Width="80" Margin="532,-1,0,0" TickFrequency="5" TickPlacement="Both" VerticalAlignment="Top" HorizontalAlignment="Left" SmallChange="1" IsSnapToTickEnabled="True" SelectionEnd="1" SelectionStart="1" Name="sliderSpeed" />
+							<TextBlock Height="23" HorizontalAlignment="Left" Margin="618,6,0,0" Name="textBlockFast" Text="Fast" VerticalAlignment="Top" />
+							<TextBlock Height="23" HorizontalAlignment="Right" Margin="650,6,0,0" Name="textBlockMoves" VerticalAlignment="Top" Text="{Binding MoveCounter, Mode=OneWay, StringFormat='Moves: {0}'}" FontWeight="Bold" />
+                            <RadioButton Content="Frame-Stewart" Height="16" HorizontalAlignment="Left" Margin="316,6,0,0" Name="radioButtonFS" VerticalAlignment="Top" IsChecked="True" Checked="radioButtonFS_Checked" />
+                            <RadioButton Content="Recursive" Height="16" HorizontalAlignment="Left" Margin="415,6,0,0" Name="radioButtonRec" VerticalAlignment="Top" Checked="radioButtonRec_Checked" />
+                            <Border BorderBrush="Silver" BorderThickness="1" Height="34" HorizontalAlignment="Left" Margin="496,-3,0,0" Name="border3" VerticalAlignment="Top" Width="148" CornerRadius="2" />
+                        </Grid>
+					</GroupBox>
+                    <GroupBox Header="Demo:" HorizontalAlignment="Stretch" Margin="6,6,6,66" Name="groupBoxDemo" VerticalAlignment="Stretch" Background="PowderBlue" BorderBrush="SteelBlue">
+                        <Grid>
+                            <Border BorderBrush="Black" BorderThickness="1">
+                                <Viewbox Stretch="Fill">
+                                    <Canvas x:Name="_canvas" Background="Wheat" Width="1600" Height="1200" />
+                                </Viewbox>
+                            </Border>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+			</TabItem>
+			<TabItem Header="Performance Analysis" Name="tabAnalysis" Style="{DynamicResource GelTabItem}" Loaded="tabAnalysis_Loaded">
+				<Grid>
+                    <GroupBox Header="Analyzing Options:" Height="80" Margin="0,0,6,6" Name="groupBoxOptions" VerticalAlignment="Bottom" BorderBrush="SteelBlue" Width="450" HorizontalAlignment="Right">
+                        <GroupBox.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFDDFFCB" Offset="1" />
+                                <GradientStop Color="#FFE7FFE5" Offset="0" />
+                                <GradientStop Color="#FF96E285" Offset="0.516" />
+                            </LinearGradientBrush>
+                        </GroupBox.Background>
+                        <Grid>
+                            <Button Content="Graph" Height="23" Name="buttonStartPlotting" Width="75" IsDefault="True" Margin="0,2,6,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="buttonStartPlotting_Click" />
+                            <Button Content="Clear" Height="23" Name="buttonStopPlotting" Width="75" IsCancel="True" Margin="0,30,6,0" HorizontalAlignment="Right" VerticalAlignment="Top" Click="buttonStopPlotting_Click" />
+                            <RadioButton Content="Freeze Pegs" Height="16" HorizontalAlignment="Right" Margin="0,5,353,0" Name="radioButtonFreezePegs" VerticalAlignment="Top" IsChecked="True" />
+                            <RadioButton Content="Freeze Disks" Height="16" HorizontalAlignment="Right" Margin="0,33,351,0" Name="radioButtonFreezeDisks" VerticalAlignment="Top" />
+                            <TextBox Height="23" HorizontalAlignment="Right" Margin="0,2,107,0" Name="textBoxEndingDisks" Text="20" VerticalAlignment="Top" Width="30" Tag="disk" IsEnabled="{Binding ElementName=radioButtonFreezePegs, Path=IsChecked}" PreviewTextInput="textBoxesInput_PreviewTextInput" LostFocus="textBoxes_LostFocus" KeyDown="textBoxes_KeyDown" />
+                            <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,5,143,0" Name="textBlockStartingDisks" Text="Ending Disks:" VerticalAlignment="Top" />
+                            <TextBox Height="23" HorizontalAlignment="Right" Margin="0,2,224,0" Name="textBoxPegsUse" Text="4" VerticalAlignment="Top" Width="30" Tag="peg" IsEnabled="{Binding ElementName=radioButtonFreezePegs, Path=IsChecked}" PreviewTextInput="textBoxesInput_PreviewTextInput" LostFocus="textBoxes_LostFocus" KeyDown="textBoxes_KeyDown" />
+                            <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,5,260,0" Name="textBlockPegsUse" Text="Pegs to Use:" VerticalAlignment="Top" />
+                            <TextBox Height="23" HorizontalAlignment="Right" Margin="0,30,107,0" Name="textBoxEndingPegs" Text="8" VerticalAlignment="Top" Width="30" Tag="peg" IsEnabled="{Binding ElementName=radioButtonFreezeDisks, Path=IsChecked}" PreviewTextInput="textBoxesInput_PreviewTextInput" LostFocus="textBoxes_LostFocus" KeyDown="textBoxes_KeyDown" />
+                            <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,33,145,0" Name="textBlockStartingPegs" Text="Ending Pegs:" VerticalAlignment="Top" />
+                            <TextBox Height="23" HorizontalAlignment="Right" Margin="0,30,224,0" Name="textBoxDisksUse" Text="10" VerticalAlignment="Top" Width="30" Tag="disk" IsEnabled="{Binding ElementName=radioButtonFreezeDisks, Path=IsChecked}" PreviewTextInput="textBoxesInput_PreviewTextInput" LostFocus="textBoxes_LostFocus" KeyDown="textBoxes_KeyDown" />
+                            <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,33,258,0" Name="textBlockDisksUse" Text="Disks to Use:" VerticalAlignment="Top" />
+                            <Border BorderBrush="Silver" BorderThickness="1" Height="55" HorizontalAlignment="Left" Margin="2,0,0,0" Name="border1" VerticalAlignment="Top" Width="88" CornerRadius="2" />
+                            <Border BorderBrush="Silver" BorderThickness="1" Height="55" HorizontalAlignment="Left" Margin="106,0,0,0" Name="border2" VerticalAlignment="Top" Width="229" CornerRadius="2" />
+                        </Grid>
+					</GroupBox>
+                    <GroupBox Header="Performance Graph:" HorizontalAlignment="Stretch" Margin="6,6,6,92" Name="groupBoxGraph" VerticalAlignment="Stretch" BorderBrush="SteelBlue" Background="PowderBlue">
+                        <Grid>
+                            <d3:ChartPlotter Name="chartPlotter" Margin="6" Background="FloralWhite" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <d3:ChartPlotter.HorizontalAxis>
+                                    <d3:HorizontalIntegerAxis Name="xAxis" />
+                                </d3:ChartPlotter.HorizontalAxis>
+                                <d3:ChartPlotter.VerticalAxis>
+                                    <d3:VerticalIntegerAxis Name="movesAxis" />
+                                </d3:ChartPlotter.VerticalAxis>
+                                <d3:Header FontFamily="Arial" Content="Towers of Hanoi Performance" />
+                                <d3:VerticalAxisTitle FontFamily="Arial" Content="Number of Moves" />
+                                <d3:HorizontalAxisTitle FontFamily="Arial" Content="X-Axis" />
+                            </d3:ChartPlotter>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Information:" Height="80" HorizontalAlignment="Right" Margin="0,0,462,6" Name="groupBoxInfo" VerticalAlignment="Bottom" BorderBrush="SteelBlue" Width="120" IsEnabled="False" Visibility="Hidden">
+                        <GroupBox.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFDDFFCB" Offset="1" />
+                                <GradientStop Color="#FFE7FFE5" Offset="0" />
+                                <GradientStop Color="#FF96E285" Offset="0.516" />
+                            </LinearGradientBrush>
+                        </GroupBox.Background>
+                        <Grid />
+                    </GroupBox>
+                </Grid>
+			</TabItem>
+		</TabControl>
+		<TextBlock Height="23" HorizontalAlignment="Right" Margin="0,3,5,0" Name="textBlockAbout" Text="CNTN04: Bùi Tấn Phát (09520601) - Nguyễn Dũng Phương (09520607)" VerticalAlignment="Top" FontWeight="Bold"></TextBlock>
+	</Grid>
+</Window>
