@@ -5,6 +5,7 @@ tower-of-hanoi-analysis
 + The demo application can solve Tower of Hanoi problem with N pegs and M disks (or discs)
 + Two different algorithms is available, Frame-Stewart and classic Recursive algorithm
 + Performance analysis is availble as a graphing tool, providing info of how many moves needed to solve a specific problem using a specific algorithm
++ Special thanks to my friend Phat Bui for contributing to this project of mine
 
 #####Prerequisites:
 + Windows XP, Vista, 7, 8, 8.1
